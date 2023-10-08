@@ -1,1 +1,1 @@
-Plaacement Management System
+Placement Management System
