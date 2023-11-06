@@ -162,3 +162,44 @@ WHERE College_ID = 1;
 -- DELETE from College table
 DELETE FROM College
 WHERE College_ID = 1;
+
+-- Milestone-4 (Advanced SQL Queries - Joins and Subqueries)
+-- Inner Joins, Left Joins & Subqueries
+
+-- Inner Join Example
+SELECT Student.Student_Name, Job.Job_Desc
+FROM Student
+INNER JOIN Placement ON Student.Student_ID = Placement.Student_ID
+INNER JOIN Job ON Placement.Job_ID = Job.Job_ID;
+
+-- Left Join Example
+SELECT Student.Student_Name, Job.Job_Desc
+FROM Student
+LEFT JOIN Placement ON Student.Student_ID = Placement.Student_ID
+LEFT JOIN Job ON Placement.Job_ID = Job.Job_ID;
+
+-- Subquery Example
+SELECT *
+FROM Job
+WHERE Package > (
+    SELECT AVG(Package)
+    FROM Job
+);
+
+-- Subquery with IN Example
+SELECT *
+FROM Student
+WHERE College_ID IN (
+    SELECT College_ID
+    FROM College
+    WHERE College_Location = 'Punjab'
+);
+
+-- Subquery with EXISTS Example
+SELECT *
+FROM Student
+WHERE EXISTS (
+    SELECT 1
+    FROM Placement
+    WHERE Placement.Student_ID = Student.Student_ID
+);
