@@ -203,3 +203,54 @@ WHERE EXISTS (
     FROM Placement
     WHERE Placement.Student_ID = Student.Student_ID
 );
+
+
+-- Milestone-5 (Role-Based Access Control - Indexing and query optimization)
+-- Creating roles & privileges
+
+-- Create three roles: Placement_Officer, Student, and DB_Admin
+CREATE ROLE Placement_Officer;
+CREATE ROLE Student;
+CREATE ROLE DB_Admin;
+
+-- Grant read and write access for all tables to the Placement_Officer role
+GRANT SELECT, INSERT, UPDATE, DELETE ON Placement_Management_System.* TO Placement_Officer;
+
+-- Grant read and write access to relevant tables to the Student role
+GRANT SELECT, INSERT, UPDATE, DELETE ON Placement_Management_System.Student TO Student;
+GRANT SELECT, INSERT, UPDATE, DELETE ON Placement_Management_System.Placement TO Student;
+
+-- Grant read access to relevant tables for the Student role
+GRANT SELECT ON Placement_Management_System.Job TO Student;
+GRANT SELECT ON Placement_Management_System.Company TO Student;
+GRANT SELECT ON Placement_Management_System.College TO Student;
+
+-- Grant all privileges to the DB_Admin role
+GRANT ALL PRIVILEGES ON Placement_Management_System.* TO DB_Admin;
+
+-- Create users
+CREATE USER 'Placement_Officer_User'@'localhost' IDENTIFIED BY 'placement_officer_password';
+CREATE USER 'Student_User'@'localhost' IDENTIFIED BY 'student_password';
+CREATE USER 'DB_Admin_User'@'localhost' IDENTIFIED BY 'db_admin_password';
+
+-- Assign roles to users
+GRANT Placement_Officer TO 'Placement_Officer_User'@'localhost';
+GRANT Student TO 'Student_User'@'localhost';
+GRANT DB_Admin TO 'DB_Admin_User'@'localhost';
+
+-- Set default roles for users
+SET DEFAULT ROLE Placement_Officer TO 'Placement_Officer_User'@'localhost';
+SET DEFAULT ROLE Student TO 'Student_User'@'localhost';
+SET DEFAULT ROLE DB_Admin TO 'DB_Admin_User'@'localhost';
+
+
+-- Adding Index and Query Optimisation
+
+-- Add an index on the 'Student_ID' column
+CREATE INDEX idx_student_id ON Student(Student_ID);
+
+-- Modify the query to fetch information from the 'students' table
+SELECT Student.Student_ID, Student.Student_Name, Student.Student_Course, Student.Student_CGPA
+FROM Student
+JOIN Placement ON Student.Student_ID = Placement.Student_ID
+WHERE Student.Student_ID = 1;
